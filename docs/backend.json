@@ -1,0 +1,166 @@
+{
+  "entities": {
+    "ContactFormSubmission": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ContactFormSubmission",
+      "type": "object",
+      "description": "Represents a contact form submission from a user.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the contact form submission."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the person submitting the form."
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address of the person submitting the form.",
+          "format": "email"
+        },
+        "message": {
+          "type": "string",
+          "description": "The message content from the contact form."
+        },
+        "submissionDate": {
+          "type": "string",
+          "description": "Date and time when the form was submitted.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "email",
+        "message",
+        "submissionDate"
+      ]
+    },
+    "FraudDetectionModel": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "FraudDetectionModel",
+      "type": "object",
+      "description": "Represents a fraud detection model.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the fraud detection model."
+        },
+        "modelName": {
+          "type": "string",
+          "description": "Name of the fraud detection model."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the fraud detection model."
+        },
+        "version": {
+          "type": "string",
+          "description": "Version of the fraud detection model."
+        },
+        "trainingDataId": {
+          "type": "string",
+          "description": "Reference to TrainingData. (Relationship: TrainingData 1:N FraudDetectionModel)"
+        }
+      },
+      "required": [
+        "id",
+        "modelName",
+        "description",
+        "version",
+        "trainingDataId"
+      ]
+    },
+    "TrainingData": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "TrainingData",
+      "type": "object",
+      "description": "Represents the training data used for the fraud detection model.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the training data."
+        },
+        "datasetName": {
+          "type": "string",
+          "description": "Name of the training dataset."
+        },
+        "uploadDate": {
+          "type": "string",
+          "description": "Date and time when the training data was uploaded.",
+          "format": "date-time"
+        },
+        "fileLocation": {
+          "type": "string",
+          "description": "Location of the training data file."
+        }
+      },
+      "required": [
+        "id",
+        "datasetName",
+        "uploadDate",
+        "fileLocation"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/contactFormSubmissions/{contactFormSubmissionId}",
+        "definition": {
+          "entityName": "ContactFormSubmission",
+          "schema": {
+            "$ref": "#/backend/entities/ContactFormSubmission"
+          },
+          "description": "Stores contact form submissions from users. Anyone can create a submission, but only admins (if roles are defined) can read/update/delete.",
+          "params": [
+            {
+              "name": "contactFormSubmissionId",
+              "description": "The unique identifier for the contact form submission."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/trainingData/{trainingDataId}",
+        "definition": {
+          "entityName": "TrainingData",
+          "schema": {
+            "$ref": "#/backend/entities/TrainingData"
+          },
+          "description": "Stores training data used for fraud detection models. Access restricted to authorized users/services.",
+          "params": [
+            {
+              "name": "trainingDataId",
+              "description": "The unique identifier for the training data."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/fraudDetectionModels/{fraudDetectionModelId}",
+        "definition": {
+          "entityName": "FraudDetectionModel",
+          "schema": {
+            "$ref": "#/backend/entities/FraudDetectionModel"
+          },
+          "description": "Stores fraud detection models. Access restricted to authorized users/services. The trainingDataId property creates a relationship with the TrainingData collection.",
+          "params": [
+            {
+              "name": "fraudDetectionModelId",
+              "description": "The unique identifier for the fraud detection model."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to support the Stendarr Consulting website's features, including contact form submissions and fraud detection model management. It prioritizes security, scalability, and ease of debugging, adhering to the core design principles of Authorization Independence, Clarity of Intent, DBAC (Database-Based Access Control), and QAPs (Rules are not Filters). Authorization independence is achieved by avoiding hierarchical dependencies. QAPs is achieved via structural segregation.\n\n1.  **Contact Form Submissions:** Contact form submissions are stored in a dedicated `contactFormSubmissions` collection. This allows for easy management of submissions without mixing them with other data.\n\n2.  **Fraud Detection Models and Training Data:** Training data and related fraud detection models are stored in dedicated collections. This segregation simplifies security rules and allows easy management of training data and models.\n\n**Authorization Independence:** There are no authorization dependencies between documents. Each collection has its own security rules that do not rely on reading data from other documents.\n\n**QAPs (Rules are not Filters):** All collections can be queried securely, as there are no rules that would prevent listing documents within a collection. Security is enforced based on the data within each document and not by filtering data after retrieval."
+  }
+}

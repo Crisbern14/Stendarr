@@ -1,0 +1,79 @@
+/**
+ * Core Philosophy: This ruleset implements a dual-access security model. It provides a public "write-only" endpoint for contact form submissions while completely restricting client-side access to sensitive machine learning data. This ensures that the public can submit information without being able to read other submissions, and internal data remains secure, presumably managed exclusively by a trusted backend service using the Admin SDK.
+ *
+ * Data Structure: The data is organized into three distinct, top-level collections: 'contactFormSubmissions', 'trainingData', and 'fraudDetectionModels'. This flat hierarchy promotes "Authorization Independence," meaning the security of one collection does not depend on reading documents from another, leading to simpler and more performant rules.
+ *
+ * Key Security Decisions:
+ * - Public Drop Box: The 'contactFormSubmissions' collection allows any user (authenticated or not) to create a document. However, all read and modification operations are denied to prevent data leakage and spam.
+ * - Backend-Only Data: The 'trainingData' and 'fraudDetectionModels' collections are completely locked down from all client-side operations. This is the most secure posture when the data is expected to be managed by server-side processes or Cloud Functions, which bypass these rules.
+ * - No Defined Roles: The IR mentions "admins" or "authorized users" but does not define a role system. Therefore, the rules default to the most secure interpretation by denying any access that would rely on such roles.
+ *
+ * Denormalization for Authorization: This ruleset does not require denormalization because its access controls are based on the collection path rather than document content. The flat structure avoids the need for cross-document `get()` calls for authorization.
+ *
+ * Structural Segregation: The use of separate top-level collections for public submissions ('contactFormSubmissions') and internal data ('trainingData', 'fraudDetectionModels') is a core part of the security model. This segregation prevents any possibility of accidentally exposing private data through list queries on a mixed-content collection.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ----------------------------------------------------------------------
+    // Helper Functions
+    // ----------------------------------------------------------------------
+
+    /**
+     * Checks if the user is authenticated.
+     */
+    // function isSignedIn() {
+    //   return request.auth != null;
+    // }
+
+    // ----------------------------------------------------------------------
+    // Collection Rules
+    // ----------------------------------------------------------------------
+
+    /**
+     * @description Allows any user (authenticated or anonymous) to submit a contact form, but denies all read, update, or delete access. This creates a secure "drop box".
+     * @path /contactFormSubmissions/{contactFormSubmissionId}
+     * @allow (create) An anonymous user can successfully create a new contact form submission.
+     * @deny (get) A user attempts to read a submission, which is denied to protect privacy.
+     * @principle Implements a "write-only" pattern for public data collection, preventing data exfiltration.
+     */
+    match /contactFormSubmissions/{contactFormSubmissionId} {
+      allow get: if false;
+      allow list: if false;
+      allow create: if true;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    /**
+     * @description Denies all client-side access to training data. This data is considered sensitive and should only be managed by a trusted backend service (e.g., Cloud Functions, Admin SDK).
+     * @path /trainingData/{trainingDataId}
+     * @allow No client-side operations are permitted.
+     * @deny (get, list, create, update, delete) An authenticated user attempts any operation, which is denied.
+     * @principle Enforces a "backend-only" access model for sensitive internal data, providing maximum security.
+     */
+    match /trainingData/{trainingDataId} {
+      allow get: if false;
+      allow list: if false;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+
+    /**
+     * @description Denies all client-side access to fraud detection models. This data is sensitive and should only be managed by a trusted backend service.
+     * @path /fraudDetectionModels/{fraudDetectionModelId}
+     * @allow No client-side operations are permitted.
+     * @deny (get, list, create, update, delete) An authenticated user attempts any operation, which is denied.
+     * @principle Enforces a "backend-only" access model for sensitive internal data, providing maximum security.
+     */
+    match /fraudDetectionModels/{fraudDetectionModelId} {
+      allow get: if false;
+      allow list: if false;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
+  }
+}
