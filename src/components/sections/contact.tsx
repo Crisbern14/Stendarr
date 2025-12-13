@@ -9,6 +9,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
+import { collection } from 'firebase/firestore';
+import { useFirestore, addDocumentNonBlocking } from '@/firebase';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'El nombre debe tener al menos 2 caracteres.' }),
@@ -18,6 +20,8 @@ const formSchema = z.object({
 
 export default function Contact() {
     const { toast } = useToast();
+    const firestore = useFirestore();
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -30,16 +34,36 @@ export default function Contact() {
     const {formState: { isSubmitting }} = form;
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        // Simulate a network request
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        if (!firestore) {
+            toast({
+                title: 'Error',
+                description: 'La base de datos no está disponible. Por favor, inténtalo de nuevo más tarde.',
+                variant: 'destructive',
+            });
+            return;
+        }
 
-        console.log(values);
-        
-        toast({
-            title: 'Mensaje Enviado',
-            description: 'Gracias por contactarnos. Nos pondremos en contacto contigo pronto.',
-        });
-        form.reset();
+        try {
+            const submission = {
+                ...values,
+                submissionDate: new Date().toISOString(),
+            };
+            const submissionsCollection = collection(firestore, 'contactFormSubmissions');
+            await addDocumentNonBlocking(submissionsCollection, submission);
+            
+            toast({
+                title: 'Mensaje Enviado',
+                description: 'Gracias por contactarnos. Nos pondremos en contacto contigo pronto.',
+            });
+            form.reset();
+        } catch (error) {
+            console.error("Error submitting form:", error);
+            toast({
+                title: 'Error al enviar',
+                description: 'No se pudo guardar tu mensaje. Por favor, inténtalo de nuevo.',
+                variant: 'destructive',
+            });
+        }
     }
 
     return (
