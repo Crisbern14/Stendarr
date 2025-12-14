@@ -36,12 +36,12 @@ export default function Team() {
                         <h3 className="text-2xl font-bold text-white">Cristian Bernal</h3>
                         <p className="text-accent font-medium">Founder & Managing Partner</p>
                         <p className="text-foreground/80 mt-2">
-                           Auditor forense y consultor especializado en fraude financiero y riesgos TI. Con trayectoria en el sector financiero, Cristian lidera la visión estratégica de Stendarr, transformando la auditoría tradicional en un motor de innovación basado en IA.
+                           Auditor forense y consultor especializado en fraude financiero y riesgos. Con trayectoria en el sector financiero, Cristian lidera la visión estratégica de Stendarr, transformando la auditoría tradicional en un motor de innovación basado en IA.
                         </p>
                         <blockquote className="mt-4 border-l-4 border-accent pl-4 italic text-foreground/90">
                             “La auditoría y la consultoría deben evolucionar al ritmo de la tecnología. Stendarr nace para liderar ese cambio.”
                         </blockquote>
-                        <Link href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" className="inline-block mt-4 text-accent hover:text-white transition-colors">
+                        <Link href="https://www.linkedin.com/in/cristian-bernal-011b33167/" target="_blank" rel="noopener noreferrer" className="inline-block mt-4 text-accent hover:text-white transition-colors">
                             <Linkedin className="w-6 h-6"/>
                         </Link>
                     </div>
