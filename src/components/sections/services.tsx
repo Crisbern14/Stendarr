@@ -28,7 +28,7 @@ const services = [
   {
     icon: <Gavel className="w-10 h-10 text-accent" />,
     title: 'Legal & Compliance',
-    description: 'Experticia en derecho laboral y tributario, soporte jurídico a investigaciones y cumplimiento normativo (SAGRILAFT, PTEE).',
+    description: 'Experticia en derecho laboral y tributario, soporte jurídico a investigaciones y cumplimiento normativo (SARLAFT, SAGRILAFT, PTEE).',
   },
   {
     icon: <Code className="w-10 h-10 text-accent" />,
