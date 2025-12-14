@@ -2,13 +2,11 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu } from 'lucide-react';
+import Image from 'next/image';
 
 const StendarrLogo = () => (
     <Link href="/" className="flex items-center gap-2">
-      <span className="font-bold text-2xl text-white tracking-wider">
-        STENDARR
-      </span>
-      <div className="w-10 h-0.5 bg-accent ml-2 hidden sm:block"></div>
+      <Image src="https://firebasestudio.app/assets/images/stendarr_logo.png" alt="Stendarr Logo" width={180} height={40} />
     </Link>
   );
 
