@@ -48,7 +48,7 @@ export default function Services() {
           {services.map((service, index) => (
             <Card key={index} className="bg-card border-border hover:border-accent transition-colors duration-300 group relative overflow-hidden flex flex-col">
               <div className="absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{
-                  background: 'radial-gradient(circle at 50% 0%, hsl(var(--accent) / 0.15), transparent 70%)'
+                background: 'radial-gradient(circle at 50% 0%, hsl(var(--accent) / 0.15), transparent 70%)'
               }}></div>
               <CardHeader className="flex flex-col items-start gap-4 z-10 relative">
                 {service.icon}
