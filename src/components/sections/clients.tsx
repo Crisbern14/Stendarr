@@ -16,7 +16,7 @@ export default function Clients() {
                 </div>
                 <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
                     {clientSegments.map((segment) => (
-                        <div key={segment.name} className="flex items-start gap-4 p-6 rounded-lg bg-card border border-border">
+                        <div key={segment.name} className="flex items-start gap-4 p-6 rounded-lg bg-card border border-border intersect:motion-preset-slide-right motion-duration-1000 intersect-once">
                             {segment.icon}
                             <div>
                                 <h3 className="text-xl font-bold text-white">{segment.name}</h3>

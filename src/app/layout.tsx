@@ -4,6 +4,7 @@ import { Toaster } from '@/components/ui/toaster';
 import Header from '@/components/layout/header';
 import Footer from '@/components/layout/footer';
 import { FirebaseClientProvider } from '@/firebase';
+import ObserverProvider from '@/components/ui/observer-provider';
 
 export const metadata: Metadata = {
   title: 'Stendarr | Auditoría, IA & Ciberseguridad en Colombia',
@@ -30,6 +31,7 @@ export default function RootLayout({
             <main className="flex-grow">{children}</main>
             <Footer />
           </div>
+          <ObserverProvider />
           <Toaster />
         </FirebaseClientProvider>
       </body>

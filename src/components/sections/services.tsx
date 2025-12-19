@@ -46,7 +46,7 @@ export default function Services() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map((service, index) => (
-            <Card key={index} className="bg-card border-border hover:border-accent transition-colors duration-300 group relative overflow-hidden flex flex-col">
+            <Card key={index} className="bg-card border-border hover:border-accent transition-colors duration-300 group relative overflow-hidden flex flex-col intersect:motion-preset-slide-up motion-duration-2000 intersect-once">
               <div className="absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{
                 background: 'radial-gradient(circle at 50% 0%, hsl(var(--accent) / 0.15), transparent 70%)'
               }}></div>
